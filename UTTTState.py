@@ -14,3 +14,10 @@ class UTTTState(State):
     def __init__(self, turn = 0, iSubboard = None, board = None):
         pass
 
+
+    def successors(self):
+        # must implement caching
+        return []
+
+    def is_winner(player_id):
+        return None
