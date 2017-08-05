@@ -11,6 +11,8 @@ Entry point for Ultimate Tic Tac Toe game tree demo.
 def main():
     # Instantiate a game tree.
     game = GameTree(UTTTState())
+    game.attach_turn_handler(None)
+
     i_won = game.play()
     if i_won:
         print("I won. Opponent lost.")
