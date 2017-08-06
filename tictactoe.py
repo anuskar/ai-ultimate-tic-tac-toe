@@ -10,7 +10,7 @@ Entry point for Ultimate Tic Tac Toe game tree demo.
 """
 def main():
     # Instantiate a game tree.
-    game = GameTree(UTTTState())
+    game = GameTree(UTTTState(None, 3, 3))
     game.attach_turn_handler(None)
 
     i_won = game.play()
