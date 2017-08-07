@@ -3,6 +3,7 @@ Ultimate Tic Tac Toe State implementation.
 """
 
 from engine.State import State
+from engine import NonTerminalError
 
 class UTTTState(State):
     """
