@@ -22,11 +22,8 @@ class UTTTSpace(Space):
             # note: 0,0 is top-left subboard.
             # sX, sY are indices pointing to the subboard.
             # iX, iY are indices pointing to the cells within the subboard[sX, sY]
-            self.cells = [[[[None
-                             for iX in range(n)]
-                             for iY in range(n)]
-                             for sX in range(N)]
-                             for sY in range(N)]
+            self.cells = [[[[None for iX in range(n)] for iY in range(n)]
+                           for sX in range(N)] for sY in range(N)]
         else:
             # We inherit N and n from the parent if defined.
             self.N = parent.N
