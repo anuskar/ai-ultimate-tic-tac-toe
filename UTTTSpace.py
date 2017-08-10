@@ -2,39 +2,65 @@
 Ultimate Tic Tac Toe implementation of the space.
 """
 
-from engine.Space import Space
-
-class UTTTSpace(Space):
+class UTTTSpace():
     """
     Represents the NxN grid composing the game board.
     Each NxN grid is divided into nxn subboards.
     """
 
     def __init__(self, parent=None, N=3, n=3):
-        super().__init__(parent)
-
         self.cells = None
         self.N = N # dim of main board
         self.n = n # dim of subboard
+        self.winner = None
 
         if parent is None:
             # Board is root node. Creating empty board.
-            # note: 0,0 is top-left subboard.
-            # sX, sY are indices pointing to the subboard.
-            # iX, iY are indices pointing to the cells within the subboard[sX, sY]
-            self.cells = [[[[None for iX in range(n)] for iY in range(n)]
-                           for sX in range(N)] for sY in range(N)]
+            # Keeping the cells in a single dimensional list allows for
+            # valid "shallow" copying.
+            self.cells = [None for c in range((n*N) ** 2)]
         else:
             # We inherit N and n from the parent if defined.
             self.N = parent.N
             self.n = parent.n
+            self.cells = list(parent.cells)
 
-    def permutations(self):
+    def get(self, coord):
         """
-        Returns a list of all possible (loosely valid) permutations,
-        using the current space configuration.
+        Gets the value at (iX, iY) in subboard (sX, sY).
         """
 
-        pass
+        (sX, sY, iX, iY) = coord
+
+        x = (sX * self.N) + iX
+        y = (sY * self.N) + iY
+        return self.cells[(self.N * self.n * y) + x]
+
+    def set(self, coord, val):
+        """
+        Sets the value at (iX, iY) in subboard (sX, sY) to val.
+        """
+
+        (sX, sY, iX, iY) = coord
+
+        x = (sX * self.N) + iX
+        y = (sY * self.N) + iY
+        self.cells[(self.N * self.n * y) + x] = val
+
+        # Check if winning move.
+        # TODO self.winner = ...
+
+    def is_winner(self, player_id):
+        """
+        Given a player_id, determines if this state
+        is a terminal state in which that player wins.
+
+        Args:
+            player_id: 0 or 1
+
+        Returns: boolean
+        """
+
+        return self.winner == player_id
 
 

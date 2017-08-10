@@ -2,37 +2,72 @@
 Ultimate Tic Tac Toe State implementation.
 """
 
-from engine.State import State
 from engine import NonTerminalError
+from UTTTSpace import UTTTSpace
 
-class UTTTState(State):
+class UTTTState():
     """
     A representation of game state.
     """
-    def __init__(self, turn=0, parent=None, board=None):
+    def __init__(self, turn=0, parent=None, restriction=None, space=None):
         """
         Args:
             turn: 0 or 1, indicating which player decides the successor state.
-            iSubboard:  The index of the subboard (1 of 9) which the turn player
-                        must play in. Assigned left to right.
-            board: a NxN grid with each cell holding a value of 0, 1, or None.
+            parent: Parent state.
+            restriction: the coordinate of the subboard successors are derived from.
+            space: a NxN grid with each cell holding a value of 0, 1, or None.
         """
-        super().__init__(turn, parent)
-
+        self.turn = turn
+        self.parent = parent
+        self.restriction = restriction
         self.cached_successors = None
 
+        self.space = space
+        if not self.space and self.parent:
+            self.space = UTTTSpace(self.parent.space)
 
-    def create_child(self, turn, space):
+
+    def possible_moves(self, subboard=None):
         """
-        Instantiates a new child linked to this instance,
-        using the given space.
-
-        Args:
-            turn: 0 or 1, the turn of the new state.
-            space: Space, the space to associate with the child state.
+        Returns a list of all possible moves using the current space
+        configuration in the form (sX, sY, iX, iY).
         """
 
-        return UTTTState(turn, self, space)
+        if not subboard:
+            subboard = self.restriction
+
+        if not subboard:
+            for sX in range(self.space.N):
+                for sY in range(self.space.N):
+                    yield from self.possible_moves((sX, sY))
+        else:
+            (sX, sY) = subboard
+            for iX in range(self.space.n):
+                for iY in range(self.space.n):
+                    coord = (sX, sY, iX, iY)
+                    if self.space.get(coord) is None:
+                        yield coord
+
+    def successors(self):
+        """
+        Returns a list of successor states.
+        """
+
+        if not self.cached_successors:
+            children = []
+            for move in self.possible_moves():
+                (_, _, iX, iY) = move
+                # Warning, a full copy of the space occurs here.
+                child = UTTTState(1 - self.turn, self, (iX, iY))
+                child.space.set(move, self.turn)
+
+                if child:
+                    children.append(child)
+
+            self.cached_successors = children
+
+        return self.cached_successors
+
 
     def is_winner(self, player_id):
         """
@@ -42,14 +77,14 @@ class UTTTState(State):
         Args:
             player_id: 0 or 1
 
-        Raises: Exception if not terminal state.
-
         Returns: boolean
         """
 
-        if self.successors():
-            raise NonTerminalError()
+        return self.space.is_winner(player_id)
 
-        # TODO: and is not draw...
+    def __str__(self):
+        """
+        Returns the string representation of this state.
+        """
 
-        return self.turn == (1 - player_id)
+        return "Turn: {0}\n{1}".format(str(self.turn), str(self.space))

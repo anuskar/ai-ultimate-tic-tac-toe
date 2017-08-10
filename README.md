@@ -1,25 +1,33 @@
-# CSC384 #
-## Ultimate Tic Tac Toe ##
+# CSC384
+## Ultimate Tic Tac Toe
 
 Python 3.5.2
 
+## How To Run
+
+TODO
+
+## How To Test
+
+TODO
+
 ## Engine
 
-### Specifications
+There are 3 key classes, GameTree, UTTTSpace, and UTTTState.
 
-- Input heuristic function
-- Mode to wait and prompt for user action (computer vs user mode)
-- Instantiate the engine using a State Space
-    - State space can be empty or partially filled in to start.
+### engine/GameTree.py
 
-#### State Space
+An implementation of a depth limited game tree, able to use custom heuristics and alpha-beta pruning, as well as invoke handlers to interact with a user or other AI. All of the game tree traversal, search, and evaluation functions are invoked or reside in this class.
 
-- 9x9 grid
-- Variable: (row: 0...9, column: 0...9, value: (X, O, null)).
+The Game Tree can be supplied with any starting State, as well as an indication of whether the game tree's AI should go first, or if the opponent should make the first move.
 
-#### Game Tree
+### UTTTSpace
 
-We use a depth-limited game tree which can accept a custom heuristic function.
+This class provides an easy way to interact with a Ultimate Tic Tac Toe board. It also keeps track of win conditions. Capable of supporting any size "Ultimate Tic Tac Toe" board (as long as it's square in nature).
+
+### UTTTState
+
+Binds the board, the turn, and any restrictions (such as where a player can go next) together in the form of the a node in the game tree.
 
 ## Heuristics
 
