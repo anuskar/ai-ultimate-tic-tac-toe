@@ -33,14 +33,23 @@ class UTTTState():
         configuration in the form (sX, sY, iX, iY).
         """
 
+        if self.space.winner is not None:
+            # Game is over.
+            return
+
         if not subboard:
             subboard = self.restriction
+            if self.space.subgames.get(subboard, None) is not None:
+                # Bad restriction. Open up to whole board.
+                # Possible edge case from wikipedia, although
+                # I'm still unsure how this edge case is possible.
+                subboard = None
 
         if not subboard:
             for sX in range(self.space.N):
                 for sY in range(self.space.N):
                     yield from self.possible_moves((sX, sY))
-        else:
+        elif self.space.subgames.get(subboard, None) is None:
             (sX, sY) = subboard
             for iX in range(self.space.n):
                 for iY in range(self.space.n):
