@@ -2,13 +2,13 @@
 Game Tree
 """
 
-from . import State
+import numbers
 
 class GameTree:
     """
     The 2-player game tree via a depth limited heuristic based MinMax.
     """
-    def __init__(self, initial_state, opponent_first=False):
+    def __init__(self, initial_state, opponent_first=False, depth_limit=5):
         """
         Args:
             initial_state: State.
@@ -16,9 +16,12 @@ class GameTree:
                             first move.
         """
 
+        self.TRACE = False
+
         self.current = initial_state
         self.custom_heuristic = None
         self.turn_handler = None
+        self.tester_handler = None
 
         self.turn_id = initial_state.turn
         if opponent_first:
@@ -26,7 +29,16 @@ class GameTree:
 
         self.alpha = float("-inf")
         self.beta = float("inf")
+        self.depth_limit = depth_limit
 
+
+    def trace(self, *text):
+        """
+        Invokes print if trace is enabled.
+        """
+
+        if self.TRACE:
+            print(*text)
 
     def attach_turn_handler(self, handler):
         """
@@ -36,10 +48,21 @@ class GameTree:
         the index into the current node's successor's list.
 
         Args:
-            handler: A function invoked when it is the opponents
-                    turn.
+            handler: A function invoked when it is the opponents turn.
         """
         self.turn_handler = handler
+
+    def attach_tester_handler(self, handler):
+        """
+        Attaches a turn handler which is invoked when it is the "AIs"
+        turn. The handler should return the value of
+        the next state, or optionally an integer representing
+        the index into the current node's successor's list.
+
+        Args:
+            handler: A function invoked when it is the "AIs" turn.
+        """
+        self.tester_handler = handler
 
     def prompt_opponent(self, node):
         """
@@ -61,12 +84,45 @@ class GameTree:
 
         opponents_move = None
         while opponents_move not in valid_moves:
-            opponents_move = self.turn_handler(node)
-            if not isinstance(opponents_move, State):
-                # Allow the handler to return an index into the successors list.
-                opponents_move = valid_moves[opponents_move]
+            try:
+                opponents_move = self.turn_handler(node)
+                if isinstance(opponents_move, numbers.Number):
+                    # Allow the handler to return an index into the successors list.
+                    opponents_move = valid_moves[opponents_move]
+            except:
+                continue
 
         return opponents_move
+
+    def prompt_tester(self, node):
+        """
+        Prompts a tester for their next move and returns that move.
+        The move is "validated". If an invalid move is supplied, the tester
+        is prompted again.
+
+        Args:
+            node: The current State.
+
+        Returns: a State instance.
+        """
+
+        if not self.tester_handler:
+            raise "No turn handler defined."
+
+        # Keep asking for their move until a valid move is made.
+        valid_moves = node.successors()
+
+        our_move = None
+        while our_move not in valid_moves:
+            try:
+                our_move = self.tester_handler(node)
+                if isinstance(our_move, numbers.Number):
+                    # Allow the handler to return an index into the successors list.
+                    our_move = valid_moves[our_move]
+            except:
+                continue
+
+        return our_move
 
     def dictate_move(self, state):
         """
@@ -106,7 +162,12 @@ class GameTree:
                 continue
 
             # Our turn.
-            our_move = self.compute_best_move(self.current)
+            our_move = None
+            if self.tester_handler:
+                # Allows for a "tester" to mock the move computation.
+                our_move = self.prompt_tester(self.current)
+            else:
+                our_move = self.compute_best_move(self.current)
 
             # Tell opponent what we are doing.
             self.dictate_move(our_move)
@@ -128,6 +189,7 @@ class GameTree:
             return self.custom_heuristic(self.turn_id, node)
 
         # Otherwise use some default heuristic.
+        self.trace("No heuristic configured.")
         return 0
 
     def utility(self, node):
@@ -144,7 +206,7 @@ class GameTree:
         children = node.successors()
         if not children:
             # Terminal
-            return node.is_winner(self.turn_id)
+            return 1 if node.is_winner(self.turn_id) else 0
 
         # Apply heuristic.
         return self.eval_heuristic(node)
@@ -180,7 +242,7 @@ class GameTree:
 
         return best_node
 
-    def df_alpha_beta(self, node, alpha, beta):
+    def df_alpha_beta(self, node, alpha, beta, depth=None):
         """
         Applies alpha beta pruning in a depth limited fashion to the
         game tree.
@@ -194,23 +256,26 @@ class GameTree:
                  of the terminal node of the DFS.
         """
 
+        if depth is None:
+            depth = self.depth_limit
+
         children = node.successors()
 
-        if not children:
+        if not children or depth == 0:
             # Terminal
             return self.utility(node)
 
         if node.turn == self.turn_id:
             # Maximize self.
             for c in children:
-                alpha = max(alpha, self.df_alpha_beta(c, alpha, beta))
+                alpha = max(alpha, self.df_alpha_beta(c, alpha, beta, depth - 1))
                 if beta <= alpha:
                     break
             return alpha
         else:
             # Minimize opponent.
             for c in children:
-                beta = min(beta, self.df_alpha_beta(c, alpha, beta))
+                beta = min(beta, self.df_alpha_beta(c, alpha, beta, depth - 1))
                 if beta <= alpha:
                     break
             return beta

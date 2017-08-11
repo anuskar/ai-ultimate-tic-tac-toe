@@ -13,7 +13,7 @@ class UTTTSpace():
         self.N = N # dim of main board
         self.n = n # dim of subboard
 
-        self.winner = parent.winner
+        self.winner = None
         self.subgames = {}
 
         if parent is None:
@@ -26,6 +26,17 @@ class UTTTSpace():
             self.N = parent.N
             self.n = parent.n
             self.cells = list(parent.cells)
+            self.winner = parent.winner
+            self.subgames = dict(parent.subgames)
+
+    def __str__(self):
+        s = ""
+        for y in range(self.N * self.n):
+            for x in range(self.N * self.n):
+                cell = self.cells[(self.N * self.n * y) + x]
+                s += ('{0: <4}'.format('[ ]' if cell is None else '['+str(cell)+']'))
+            s += '\n'
+        return s
 
     def get(self, coord):
         """
@@ -73,7 +84,7 @@ class UTTTSpace():
                 self.subgames[(sX, sY)] = val
 
         # check if outer game is won by the latest move
-        if self.subgames[(sX, sY)]:
+        if self.subgames.get((sX, sY), None) is not None:
             subwinner = self.subgames[(sX, sY)]
             cond_row = all(self.subgames.get((cx, sY), None) == subwinner for cx in range(self.N))
             cond_col = all(self.subgames.get((sX, cy), None) == subwinner for cy in range(self.N))

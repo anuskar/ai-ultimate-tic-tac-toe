@@ -13,7 +13,7 @@ def user_turn_handler(node):
 
     sc = node.successors()
     for i in range(len(sc)):
-        print(i, str(sc[i]))
+        print("#" + str(i), str(sc[i]))
 
     while True:
         try:
@@ -22,7 +22,8 @@ def user_turn_handler(node):
                 print("Out of bounds.")
                 continue
             return index
-        except TypeError:
+        except:
+            print("Unable to read as integer.")
             pass
 
     return None
@@ -33,9 +34,11 @@ Entry point for Ultimate Tic Tac Toe game tree demo.
 def main():
     # Instantiate a game tree.
     opponent_first = False
-    initial_state = UTTTState(1 if opponent_first else 0, None, UTTTSpace(None, 3, 3))
+    initial_state = UTTTState(1 if opponent_first else 0, None, None, UTTTSpace(None, 3, 3))
     game = GameTree(initial_state, 1 if opponent_first else 0)
+
     game.attach_turn_handler(user_turn_handler)
+    game.attach_tester_handler(user_turn_handler)
 
     i_won = game.play()
     if i_won:

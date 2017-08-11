@@ -96,4 +96,4 @@ class UTTTState():
         Returns the string representation of this state.
         """
 
-        return "Turn: {0}\n{1}".format(str(self.turn), str(self.space))
+        return "Turn: {0}; Last move made by: {1}\n{2}".format(str(self.turn), str(1 - self.turn), str(self.space))

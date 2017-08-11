@@ -5,7 +5,9 @@ Python 3.5.2
 
 ## How To Run
 
-TODO
+```
+python tictactoe.py
+```
 
 ## How To Test
 
