@@ -33,7 +33,11 @@ Binds the board, the turn, and any restrictions (such as where a player can go n
 
 ## Heuristics
 
-TODO
+A utility value of 1 indicates a win for the AI, while -1 is a lose. In order to remain an admissible heuristic, the heuristic function should return values in the range [-1, 1].
+
+### Heuristic A
+
+- Based on the progress towards a win in the outer board, dictated by progress towards a win in each subboard.
 
 ## Comments
 
