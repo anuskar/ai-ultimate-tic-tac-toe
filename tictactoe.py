@@ -53,9 +53,9 @@ def main():
 
     i_won = game.play(heuristic_B)
     if i_won:
-        print("I lost. Opponent won.")
-    else:
         print("I won. Opponent lost.")
+    else:
+        print("I lost. Opponent won.")
 
 
 if __name__ == "__main__":

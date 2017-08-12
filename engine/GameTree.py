@@ -149,16 +149,16 @@ class GameTree:
 
         while True:
             children = self.current.successors()
-            if len(children) == 0:
+            if not children:
                 # If we reach a terminal node, then game is over.
                 # Return True if we win.
-                return self.current.turn == self.turn_id
+                return self.current.is_winner(self.turn_id)
 
             # Opponents turn.
             if self.current.turn != self.turn_id:
                 opponents_move = self.prompt_opponent(self.current)
 
-                # Print out the final choice of opponents
+                # Print out the final choice of the opponent
                 self.dictate_move(opponents_move)
 
                 self.current = opponents_move

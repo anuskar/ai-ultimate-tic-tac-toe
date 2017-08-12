@@ -62,7 +62,7 @@ class UTTTState():
         Returns a list of successor states.
         """
 
-        if not self.cached_successors:
+        if self.cached_successors is None:
             children = []
             for move in self.possible_moves():
                 (_, _, iX, iY) = move
