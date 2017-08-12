@@ -32,13 +32,13 @@ def heuristic_B(turn_id, node):
         for k in node.space.subgames:
             if (node.space.subgames[k] != None):
                 if (node.space.subgames[k] == turn_id):
-                    grade += grade
+                    grade += 1
 
     else:
         for k in node.space.subgames:
             if (node.space.subgames[k] != None):
                 if (node.space.subgames[k] == 1 - turn_id):
-                    grade -= grade
+                    grade -= 1
 
     coord = []
     parent = node.parent
