@@ -47,7 +47,7 @@ def main():
     game.attach_turn_handler(always_choose_state_zero)
 #    game.attach_tester_handler(user_turn_handler)
 
-    i_won = game.play(heuristic_A)
+    i_won = game.play(heuristic_B)
     if i_won:
         print("I lost. Opponent won.")
     else:
