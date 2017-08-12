@@ -8,7 +8,7 @@ class GameTree:
     """
     The 2-player game tree via a depth limited heuristic based MinMax.
     """
-    def __init__(self, initial_state, opponent_first=False, depth_limit=5):
+    def __init__(self, initial_state, opponent_first=False, depth_limit=3):
         """
         Args:
             initial_state: State.
@@ -149,7 +149,7 @@ class GameTree:
 
         while True:
             children = self.current.successors()
-            if children is None:
+            if len(children) == 0:
                 # If we reach a terminal node, then game is over.
                 # Return True if we win.
                 return self.current.turn == self.turn_id
@@ -157,6 +157,9 @@ class GameTree:
             # Opponents turn.
             if self.current.turn != self.turn_id:
                 opponents_move = self.prompt_opponent(self.current)
+
+                # Print out the final choice of opponents
+                self.dictate_move(opponents_move)
 
                 self.current = opponents_move
                 continue
@@ -227,7 +230,7 @@ class GameTree:
         best_gamma = None
 
         for c in node.successors():
-            gamma = self.df_alpha_beta(c, float('-infty'), float('infty'))
+            gamma = self.df_alpha_beta(c, float('-inf'), float('inf'))
 
             if node.turn == self.turn_id:
                 # gamma == alpha; maximize alpha

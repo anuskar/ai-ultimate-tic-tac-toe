@@ -5,6 +5,7 @@ Ultimate Tic Tac Toe game tree solver.
 from engine.GameTree import GameTree
 from UTTTState import UTTTState
 from UTTTSpace import UTTTSpace
+from heuristic import *
 
 def user_turn_handler(node):
     """
@@ -28,6 +29,11 @@ def user_turn_handler(node):
 
     return None
 
+
+def always_choose_state_zero(node):
+    return 0
+
+
 """
 Entry point for Ultimate Tic Tac Toe game tree demo.
 """
@@ -37,14 +43,15 @@ def main():
     initial_state = UTTTState(1 if opponent_first else 0, None, None, UTTTSpace(None, 3, 3))
     game = GameTree(initial_state, 1 if opponent_first else 0)
 
-    game.attach_turn_handler(user_turn_handler)
-    game.attach_tester_handler(user_turn_handler)
+#    game.attach_turn_handler(user_turn_handler)
+    game.attach_turn_handler(always_choose_state_zero)
+#    game.attach_tester_handler(user_turn_handler)
 
-    i_won = game.play()
+    i_won = game.play(heuristic_A)
     if i_won:
-        print("I won. Opponent lost.")
-    else:
         print("I lost. Opponent won.")
+    else:
+        print("I won. Opponent lost.")
 
 
 if __name__ == "__main__":
