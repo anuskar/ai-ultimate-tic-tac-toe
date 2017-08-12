@@ -33,13 +33,17 @@ def user_turn_handler(node):
 def always_choose_state_zero(node):
     return 0
 
+def always_choose_last_state(node):
+    sc = node.successors()
+    length = len(sc) - 1
+    return length
 
 """
 Entry point for Ultimate Tic Tac Toe game tree demo.
 """
 def main():
     # Instantiate a game tree.
-    opponent_first = False
+    opponent_first = True
     initial_state = UTTTState(1 if opponent_first else 0, None, None, UTTTSpace(None, 3, 3))
     game = GameTree(initial_state, 1 if opponent_first else 0)
 

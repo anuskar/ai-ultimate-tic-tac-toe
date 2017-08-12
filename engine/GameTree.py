@@ -8,7 +8,7 @@ class GameTree:
     """
     The 2-player game tree via a depth limited heuristic based MinMax.
     """
-    def __init__(self, initial_state, opponent_first=False, depth_limit=2):
+    def __init__(self, initial_state, opponent_first=False, depth_limit=1):
         """
         Args:
             initial_state: State.
