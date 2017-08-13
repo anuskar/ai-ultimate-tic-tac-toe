@@ -33,11 +33,17 @@ Binds the board, the turn, and any restrictions (such as where a player can go n
 
 ## Heuristics
 
-A utility value of 1 indicates a win for the AI, while -1 is a lose. In order to remain an admissible heuristic, the heuristic function should return values in the range [-1, 1].
+A utility value of 100 indicates a win for the AI, while -100 is a lose. In order to remain an admissible heuristic, the heuristic function should return values in the range [-100, 100].
 
 ### Heuristic A
 
-- Based on the progress towards a win in the outer board, dictated by progress towards a win in each subboard.
+- Stratigy 1: Count the number of win of subgame. More win in subgame, a higher utility will be assigned.
+- Stratigy 2: Assign an utility value to each position on the game board. For example, take the middle block of the main gameboard and sub gameboard will have higher utility
+- Stratigy 3: Consider the case of two out of three blocks are occupied by the same player. Then we will have higher utility to occupied that third sopt.
+- Stratigy 4: In out turn a positive utility will be assigned; In opponent's turn a negetive utility will be assigned. It's because of the stratigy of alpha-beta pruning
+
+### Heuristic B
+Heuristic fuction B is a simplified version of Heuristic function A. It removes the Stratigy 3 from function A, but seems have better perfornmence.
 
 ## Comments
 

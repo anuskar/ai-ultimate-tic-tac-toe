@@ -48,7 +48,7 @@ def main():
     game = GameTree(initial_state, 1 if opponent_first else 0)
 
 #    game.attach_turn_handler(user_turn_handler)
-    game.attach_turn_handler(always_choose_state_zero)
+    game.attach_turn_handler(always_choose_last_state)
 #    game.attach_tester_handler(user_turn_handler)
 
     i_won = game.play(heuristic_B)

@@ -23,8 +23,12 @@ def heuristic_A(turn_id, node):
     children = node.successors()
     if (node.turn == turn_id):
         grade += len(children)
+        if node.is_winner(turn_id):
+            return 100
     else:
         grade -= len(children)
+        if node.is_winner(1 - turn_id):
+            return -100
 
     # if child win more subgame will get higher grade
     middle = 0
@@ -215,8 +219,12 @@ def heuristic_B(turn_id, node):
     children = node.successors()
     if (node.turn == turn_id):
         grade += len(children)
+        if node.is_winner(turn_id):
+            return 100
     else:
         grade -= len(children)
+        if node.is_winner(1 - turn_id):
+            return -100
 
 
     # check whether the middle subgame is won by anyone
