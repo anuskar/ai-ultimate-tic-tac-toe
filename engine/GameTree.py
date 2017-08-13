@@ -17,6 +17,7 @@ class GameTree:
         """
 
         self.TRACE = False
+        self.DICTATE = True
 
         self.current = initial_state
         self.custom_heuristic = None
@@ -38,6 +39,14 @@ class GameTree:
         """
 
         if self.TRACE:
+            print(*text)
+
+    def dictate(self, *text):
+        """
+        Invokes print if trace is enabled.
+        """
+
+        if self.DICTATE:
             print(*text)
 
     def attach_turn_handler(self, handler):
@@ -132,7 +141,7 @@ class GameTree:
             state: The state to dictate.
         """
 
-        print(state)
+        self.dictate(state)
 
     def play(self, custom_heuristic=None):
         """
@@ -205,11 +214,6 @@ class GameTree:
 
         Returns the utility value of the node.
         """
-
-        children = node.successors()
-        if not children:
-            # Terminal
-            return 1 if node.is_winner(self.turn_id) else 0
 
         # Apply heuristic.
         return self.eval_heuristic(node)

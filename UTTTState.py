@@ -41,8 +41,7 @@ class UTTTState():
             subboard = self.restriction
             if self.space.subgames.get(subboard, None) is not None:
                 # Bad restriction. Open up to whole board.
-                # Possible edge case from wikipedia, although
-                # I'm still unsure how this edge case is possible.
+                # This can happen if a subboard has already been won.
                 subboard = None
 
         if not subboard:
