@@ -99,7 +99,7 @@ def main():
         avg_time = all_time / float(len(depth) + 1)
         percent_win = all_wins / float(len(depth) + 1)
 
-        print("{:<12}{:<15}{:<8}{:<15.3f}{:<13.3f}Both".format(trials * 2 * (range(depth) + 1), hName, 'All', avg_time, percent_win))
+        print("{:<12}{:<15}{:<8}{:<15.3f}{:<13.3f}{:<15}".format(trials * 2 * (range(depth) + 1), hName, 'All', avg_time, percent_win, 'Both'))
 
 
 if __name__ == "__main__":
