@@ -6,11 +6,13 @@ __Developed By__
 - Noah Negin-Ulster
 - Zidong Xie
 
+All source code, excluding Python standard libraries, was written exclusively by us (Noah & Zidong). We did not use any starter code.
+
 ## System Requirements
 
 Python 3.5.2
 
-No external or third party libraries are used. To run the engine in an interactive mode (e.g. human vs AI), a terminal is required.
+No external or third party dependencies are used. To run the engine in an interactive mode (e.g. human vs AI), a terminal is required.
 
 ## How To Test
 
@@ -81,6 +83,3 @@ __Only valid for a `N=3,n=3` game.__
 
 Identitical to Heuristic A, with the exception that __(S3)__ is removed in favour of higher performance (and thus greater depth limit can be used).
 
-## Comments
-
-TODO
