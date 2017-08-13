@@ -37,6 +37,7 @@ def main():
     heuristics = { 'A': heuristic_A, 'B': heuristic_B }
 
     # Testing for standard UTTT board.
+    print("{:<12}{:<15}{:<8}{:<15}{:<13}{:<15}".format("# Trials", "Heuristic", "Depth", "Avg Runtime", "Win Rate", "Player 0"))
 
     for hName, hFunc in sorted(heuristics.items()):
         trace("[Heuristic {}]".format(hName))
@@ -80,25 +81,25 @@ def main():
                 avg_time = i_time / trials
                 percent_win = i_wins / trials
 
-                print("Trials: {}\tHeuristic: {}\tDepth: {}\tAvg Runtime: {}\tWin Percent: {}\tPlayer 0: {}".format(trials, hName, d, avg_time, percent_win, player_zero))
+                print("{:<12}{:<15}{:<8}{:<15.3f}{:<13.3f}{:<15}".format(trials, hName, d, avg_time, percent_win, player_zero))
 
                 all_order_time += avg_time
                 all_order_wins += percent_win
 
             # Average over opponent starting vs. AI starting.
-            avg_time = all_order_time / 2
-            percent_win = all_order_wins / 2
+            avg_time = all_order_time / 2.0
+            percent_win = all_order_wins / 2.0
 
-            print("Trials: {}\tHeuristic: {}\tDepth: {}\tAvg Runtime: {}\tWin Percent: {}".format(trials * 2, hName, d, avg_time, percent_win))
+            print("{:<12}{:<15}{:<8}{:<15.3f}{:<13.3f}{:<15}".format(trials * 2, hName, d, avg_time, percent_win, 'Both'))
 
             all_time += avg_time
             all_wins += percent_win
 
         # Average over opponent starting vs. AI starting.
-        avg_time = all_time / (len(depth) + 1)
-        percent_win = all_wins / (len(depth) + 1)
+        avg_time = all_time / float(len(depth) + 1)
+        percent_win = all_wins / float(len(depth) + 1)
 
-        print("Trials: {}\tHeuristic: {}\tAvg Runtime: {}\tWin Percent: {}".format(trials * 2 * (range(depth) + 1), hName, avg_time, percent_win))
+        print("{:<12}{:<15}{:<8}{:<15.3f}{:<13.3f}Both".format(trials * 2 * (range(depth) + 1), hName, 'All', avg_time, percent_win))
 
 
 if __name__ == "__main__":
