@@ -95,8 +95,8 @@ def main():
             all_wins += percent_win
 
         # Average over opponent starting vs. AI starting.
-        avg_time = all_time / (range(depth) + 1)
-        percent_win = all_wins / (range(depth) + 1)
+        avg_time = all_time / (len(depth) + 1)
+        percent_win = all_wins / (len(depth) + 1)
 
         print("Trials: {}\tHeuristic: {}\tAvg Runtime: {}\tWin Percent: {}".format(trials * 2 * (range(depth) + 1), hName, avg_time, percent_win))
 
