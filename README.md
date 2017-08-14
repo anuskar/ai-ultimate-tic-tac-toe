@@ -18,16 +18,45 @@ No external or third party dependencies are used. To run the engine in an intera
 
 To run the heuristic comparison code, execute:
 
+`python compare_heuristics.py`
+
 ```
-python compare_heuristics.py [--trace] [--dictate]
+usage: compare_heuristics.py [-h] [--trace] [--dictate]
+
+Compares heuristics.
+
+optional arguments:
+  -h, --help  show this help message and exit
+  --trace     Enables minimal tracing.
+  --dictate   Enables move dictation.
 ```
 
 Passing in `--trace` will print the current execution. Passing in `--dictate` will print the current move.
 
 To play against the engine yourself (human vs. AI), execute:
 
+`python tictactoe.py`
+
 ```
-python tictactoe.py [--no-trace] [--computer-first] [--heuristic=A] [--depth=2] [--non-interactive=random]
+usage: tictactoe.py [-h] [--no-trace] [--computer-first]
+                    [--heuristic {a,b,mcts}] [--depth DEPTH]
+                    [--non-interactive {first,last,random}]
+                    [--rtrials RTRIALS] [--mcts-time MCTS_TIME]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --no-trace            Disables full tracing of successor states.
+  --computer-first      Makes the AI go first.
+  --heuristic {a,b,mcts}
+                        Selects a heuristic for the AI to move.
+  --depth DEPTH         Depth limit for game tree.
+  --non-interactive {first,last,random}
+                        Use a non-interactive turn handler.
+  --rtrials RTRIALS     Number of random trials to conduct. Forces non-
+                        interactive=random.
+  --mcts-time MCTS_TIME
+                        Maximum time (seconds) to run MCTS simulations per
+                        move decision.
 ```
 
 Passing in `--computer-first` will cause the AI to make the first move. Note that this is the most computationally intensive part of the game due to the initial branching factor of `(n x N)^2` where `n` is the dimension of the inner subboard and `N` is the dimension of the outer board in terms of the number of subboards.
@@ -78,4 +107,10 @@ This heuristic employs 4 overall _strategies_:
 ### Heuristic B
 
 Identitical to Heuristic A, with the exception that __(S3)__ is removed in favour of higher performance (and thus greater depth limit can be used).
+
+### MCTS
+
+(The Monte Carlo Tree Search is not really a heuristic, however you call it as such in our program; in the command line it's `mcts`.)
+
+The core of our project was the implementation of a heuristic to be used with depth-limited alpha-beta pruning to solve any arbitrary NxN "Ultimate Tic Tac Toe" board. After noticing poor peformance with our heuristics, and a preliminary Google search indicating that no good heuristic exists, we implemented an extremely primitive MCTS "player". Our goal was not to focus on MCTS, and thus it can be improved for better performance and better selection strategies. The main idea behind our MCTS implementation was to see where it stood in terms of its win rate compared to our heuristics. Even a basic MCTS seemed to perform much better than any variation of a heuristic we attempted to implement.
 

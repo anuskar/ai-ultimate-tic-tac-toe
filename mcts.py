@@ -56,6 +56,7 @@ def mcts_player(last_state):
     Given the last state, we have to pick the best successor.
     """
     global root
+    global max_duration
 
     MCTS_TUNABLE = 0.3
 
