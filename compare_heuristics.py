@@ -10,6 +10,7 @@ from engine.GameTree import GameTree
 from UTTTState import UTTTState
 from UTTTSpace import UTTTSpace
 from heuristic import heuristic_A, heuristic_B
+from mcts import mcts_player, mcts_reset
 
 TRACE = False
 DICTATE = False
@@ -67,10 +68,15 @@ def against_random(trials, depths, heuristics):
                     # Instantiate the game tree.
                     game = GameTree(initial_state, opponent_first, d)
 
+                    game.DICTATE = DICTATE
+
                     # Test against random.
                     game.attach_turn_handler(always_choose_random_state)
 
-                    game.DICTATE = DICTATE
+                    if hName.upper() == "MCTS":
+                        hFunc = None
+                        mcts_reset()
+                        game.attach_tester_handler(mcts_player)
 
                     start = time.time()
                     win = game.play(hFunc)
@@ -168,7 +174,7 @@ def main():
     """
     trials = 5
     depths = [1, 2, 3]
-    heuristics = { 'A': heuristic_A, 'B': heuristic_B }
+    heuristics = { 'A': heuristic_A, 'B': heuristic_B, 'MCTS': mcts_player }
 
     print("===")
     print("Performing tests...")

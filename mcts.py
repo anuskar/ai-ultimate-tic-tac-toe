@@ -44,7 +44,7 @@ def always_choose_random_state(node):
 root = None
 max_duration = 3
 
-def mcts_reset(mcts_time):
+def mcts_reset(mcts_time=3):
     global root
     global max_duration
 
