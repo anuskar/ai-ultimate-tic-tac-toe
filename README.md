@@ -66,8 +66,6 @@ Utility values are in the range [-100, 100] where 100 indicates a win for the AI
 
 ### Heuristic A
 
-__Only valid for a `N=3,n=3` game.__
-
 This heuristic employs 4 overall _strategies_:
 
 "Favouring" one factor over another implies that the favoured factor yields a higher utility value.
@@ -78,8 +76,6 @@ This heuristic employs 4 overall _strategies_:
 - __(S4)__: Ensure a zero-sum game by multiplying the utility value by a factor of -1 when computing the opponent's utility. This also enables proper use of alpha-benta pruning.
 
 ### Heuristic B
-
-__Only valid for a `N=3,n=3` game.__
 
 Identitical to Heuristic A, with the exception that __(S3)__ is removed in favour of higher performance (and thus greater depth limit can be used).
 

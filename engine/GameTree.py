@@ -141,7 +141,7 @@ class GameTree:
             state: The state to dictate.
         """
 
-        self.dictate(state)
+        self.dictate(str(state))
 
     def play(self, custom_heuristic=None):
         """

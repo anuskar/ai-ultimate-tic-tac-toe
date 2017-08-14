@@ -22,6 +22,7 @@ def always_choose_random_state(node):
 
 
 def trace(*args):
+    global TRACE
     if TRACE:
         print(*args)
 
@@ -29,6 +30,8 @@ def against_random(trials, depths, heuristics):
     """
     Tests each heuristic against a random player.
     """
+
+    global DICTATE
 
     print("=== Heuristic against Random ===")
 
@@ -102,6 +105,8 @@ def baseline():
     """
     Pits random against random.
     """
+
+    global DICTATE
 
     print("== Random against Random ==")
 
