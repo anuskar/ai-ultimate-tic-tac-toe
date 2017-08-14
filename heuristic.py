@@ -2,18 +2,6 @@ from engine.GameTree import *
 from UTTTState import *
 from UTTTSpace import *
 
-
-mark = [[1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 2, 1, 1, 2, 1, 1, 2, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 3, 3, 3, 1, 1, 1],
-        [1, 2, 1, 3, 4, 3, 1, 2, 1],
-        [1, 1, 1, 3, 3, 3, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 2, 1, 1, 2, 1, 1, 2, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1]]
-
-
 def heuristic_A(turn_id, node):
 
     grade = 0
@@ -29,46 +17,68 @@ def heuristic_A(turn_id, node):
         if node.is_winner(1 - turn_id):
             return -100
 
-    # if child win more subgame will get higher grade
-    middle = 0
-    if (node.turn == turn_id):
+    # check whether the middle subgame is won by anyone
+    if (node.space.N % 2 == 1):
+        middle = 0
         for k in node.space.subgames:
             if (node.space.subgames[k] != None):
-                if (node.space.subgames[k] == turn_id):
-                    grade += 1
-                if k == (1,1):
+                if k == (node.space.N % 2, node.space.N % 2):
                     middle = 1
 
+        mark = []
+        if middle == 1:
+            row_num = 1
+            colum_num = 1
+            row_one = []
+            row_two = []
+            for y in range(node.space.N * node.space.n):
+                row_one.append(1)
+                if y == colum_num:
+                    row_two.append(2)
+                    colum_num += 3
+                else:
+                    row_two.append(1)
 
-    else:
-        for k in node.space.subgames:
-            if (node.space.subgames[k] != None):
-                if (node.space.subgames[k] == 1 - turn_id):
-                    grade -= 1
-                if k == (1,1):
-                    middle = 1
+            for y in range(node.space.N * node.space.n):
+                if y == row_num:
+                    mark.append(row_two)
+                    row_num += 3
+                else:
+                    mark.append(row_one)
 
-    if middle == 1:
-        mark = [[1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 2, 1, 1, 2, 1, 1, 2, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 1, 1, 2, 2, 2, 1, 1, 1],
-                [1, 2, 1, 2, 4, 2, 1, 2, 1],
-                [1, 1, 1, 2, 2, 2, 1, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 2, 1, 1, 2, 1, 1, 2, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1]]
-    else:
-        mark = [[1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 0, 1, 1, 0, 1, 1, 0, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 0, 1, 1, 2, 1, 1, 0, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 0, 1, 1, 0, 1, 1, 0, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1]]
+        else:
+            row_num = 1
+            colum_num = 1
+            row_one = []
+            row_two = []
+            for y in range(node.space.N * node.space.n):
+                row_one.append(1)
+                if y == colum_num:
+                    row_two.append(0)
+                    colum_num += 3
+                else:
+                    row_two.append(1)
 
+            for y in range(node.space.N * node.space.n):
+                if y == row_num:
+                    mark.append(row_two)
+                    row_num += 3
+                else:
+                    mark.append(row_one)
+
+        # More middle block in the subgame will earn more grade
+        if (node.turn == turn_id):
+            for y in range(node.space.N * node.space.n):
+                for x in range(node.space.N * node.space.n):
+                    cell = node.space.cells[(node.space.N * node.space.n * y) + x]
+                    if cell == turn_id:
+                        grade += mark[y][x]
+        else:
+            for y in range(node.space.N * node.space.n):
+                for x in range(node.space.N * node.space.n):
+                    cell = node.space.cells[(node.space.N * node.space.n * y) + x]
+                    if cell == 1 - turn_id:
+                        grade -= mark[y][x]
 
     # if the opponent already ocupy two connected block in a subgame, then don not choose that subgame again
     coord = []
@@ -81,20 +91,6 @@ def heuristic_A(turn_id, node):
         if(child.restriction == node.restriction ):
             coord = [iX, iY]
 
-    #More middle block in the subgame will earn more grade
-    if (node.turn == turn_id):
-        for y in range(node.space.N * node.space.n):
-            for x in range(node.space.N * node.space.n):
-                cell = node.space.cells[(node.space.N * node.space.n * y) + x]
-                if cell == turn_id:
-                    grade += mark[y][x]
-    else:
-        for y in range(node.space.N * node.space.n):
-            for x in range(node.space.N * node.space.n):
-                cell = node.space.cells[(node.space.N * node.space.n * y) + x]
-                if cell == 1 - turn_id:
-                    grade -= mark[y][x]
-
     # if in a sub game, two of mine nodes are connected, then it will have a higher gread
     if (node.restriction != None and node.turn == turn_id):
         #check colum
@@ -106,7 +102,7 @@ def heuristic_A(turn_id, node):
                    opponent += 1
                elif node.space.get((coord[0], coord[1], cx, cy)) == turn_id:
                    mine += 1
-            if mine == 2 and opponent == 0:
+            if mine == node.space.n - 1 and opponent == 0:
                 grade += 1
 
         #check row
@@ -118,7 +114,7 @@ def heuristic_A(turn_id, node):
                    opponent += 1
                elif node.space.get((coord[0], coord[1], cx, cy)) == turn_id:
                    mine += 1
-            if mine == 2 and opponent == 0:
+            if mine == node.space.n - 1 and opponent == 0:
                 grade += 1
 
         # check diagonals
@@ -126,18 +122,18 @@ def heuristic_A(turn_id, node):
         cy = 0
         opponent = 0
         mine = 0
-        while (cx < 3 and cy < 3):
+        while (cx < node.space.n and cy < node.space.n):
             if node.space.get((coord[0], coord[1], cx, cy)) == 1 - turn_id:
                 opponent += 1
             elif node.space.get((coord[0], coord[1], cx, cy)) == turn_id:
                 mine += 1
             cx += 1
             cy += 1
-        if mine == 2 and opponent == 0:
+        if mine == node.space.n - 1 and opponent == 0:
             grade += 1
 
-        cx = 2
-        cy = 2
+        cx = node.space.n - 1
+        cy = node.space.n - 1
         opponent = 0
         mine = 0
         while (cx >= 0 and cy >= 0):
@@ -147,7 +143,7 @@ def heuristic_A(turn_id, node):
                 mine += 1
             cx -= 1
             cy -= 1
-        if mine == 2 and opponent == 0:
+        if mine == node.space.n - 1 and opponent == 0:
             grade += 1
 
 
@@ -162,7 +158,7 @@ def heuristic_A(turn_id, node):
                    opponent += 1
                elif node.space.get((coord[0], coord[1], cx, cy)) == 1 - turn_id:
                    mine += 1
-            if opponent == 2 and mine == 0:
+            if opponent == node.space.n - 1 and mine == 0:
                 grade -= 1
 
         #check row
@@ -174,7 +170,7 @@ def heuristic_A(turn_id, node):
                    opponent += 1
                elif node.space.get((coord[0], coord[1], cx, cy)) == 1 - turn_id:
                    mine += 1
-            if opponent == 2 and mine == 0:
+            if opponent == node.space.n - 1 and mine == 0:
                 grade -= 1
 
         # check diagonals
@@ -182,18 +178,18 @@ def heuristic_A(turn_id, node):
         cy = 0
         opponent = 0
         mine = 0
-        while (cx < 3 and cy < 3):
+        while (cx < node.space.n and cy < node.space.n):
             if node.space.get((coord[0], coord[1], cx, cy)) == turn_id:
                 opponent += 1
             elif node.space.get((coord[0], coord[1], cx, cy)) == 1 - turn_id:
                 mine += 1
             cx += 1
             cy += 1
-        if opponent == 2 and mine == 0:
+        if opponent == node.space.n - 1 and mine == 0:
             grade -= 1
 
-        cx = 2
-        cy = 2
+        cx = node.space.n - 1
+        cy = node.space.n - 1
         opponent = 0
         mine = 0
         while (cx >= 0 and cy >= 0):
@@ -203,7 +199,7 @@ def heuristic_A(turn_id, node):
                 mine += 1
             cx -= 1
             cy -= 1
-        if opponent == 2 and mine == 0:
+        if opponent == node.space.n - 1 and mine == 0:
             grade -= 1
 
 
@@ -227,46 +223,67 @@ def heuristic_B(turn_id, node):
 
 
     # check whether the middle subgame is won by anyone
-    middle = 0
-    for k in node.space.subgames:
-        if (node.space.subgames[k] != None):
-            if k == (1,1):
-                middle = 1
+    if (node.space.N % 2 == 1):
+        middle = 0
+        for k in node.space.subgames:
+            if (node.space.subgames[k] != None):
+                if k == (node.space.N % 2, node.space.N % 2):
+                    middle = 1
 
-    if middle == 1:
-        mark = [[1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 2, 1, 1, 2, 1, 1, 2, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 1, 1, 2, 2, 2, 1, 1, 1],
-                [1, 2, 1, 2, 4, 2, 1, 2, 1],
-                [1, 1, 1, 2, 2, 2, 1, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 2, 1, 1, 2, 1, 1, 2, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1]]
-    else:
-        mark = [[1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 0, 1, 1, 0, 1, 1, 0, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 0, 1, 1, 2, 1, 1, 0, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 0, 1, 1, 0, 1, 1, 0, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1]]
+        mark = []
+        if middle == 1:
+            row_num = 1
+            colum_num = 1
+            row_one = []
+            row_two = []
+            for y in range(node.space.N * node.space.n):
+                row_one.append(1)
+                if y == colum_num:
+                    row_two.append(2)
+                    colum_num += 3
+                else:
+                    row_two.append(1)
 
-    #More middle block in the subgame will earn more grade
-    if (node.turn == turn_id):
-        for y in range(node.space.N * node.space.n):
-            for x in range(node.space.N * node.space.n):
-                cell = node.space.cells[(node.space.N * node.space.n * y) + x]
-                if cell == turn_id:
-                    grade += mark[y][x]
+            for y in range(node.space.N * node.space.n):
+                if y == row_num:
+                    mark.append(row_two)
+                    row_num += 3
+                else:
+                    mark.append(row_one)
 
-    else:
-        for y in range(node.space.N * node.space.n):
-            for x in range(node.space.N * node.space.n):
-                cell = node.space.cells[(node.space.N * node.space.n * y) + x]
-                if cell == 1 - turn_id:
-                    grade -= mark[y][x]
+        else:
+            row_num = 1
+            colum_num = 1
+            row_one = []
+            row_two = []
+            for y in range(node.space.N * node.space.n):
+                row_one.append(1)
+                if y == colum_num:
+                    row_two.append(0)
+                    colum_num += 3
+                else:
+                    row_two.append(1)
+
+            for y in range(node.space.N * node.space.n):
+                if y == row_num:
+                    mark.append(row_two)
+                    row_num += 3
+                else:
+                    mark.append(row_one)
+
+        # More middle block in the subgame will earn more grade
+        if (node.turn == turn_id):
+            for y in range(node.space.N * node.space.n):
+                for x in range(node.space.N * node.space.n):
+                    cell = node.space.cells[(node.space.N * node.space.n * y) + x]
+                    if cell == turn_id:
+                        grade += mark[y][x]
+
+        else:
+            for y in range(node.space.N * node.space.n):
+                for x in range(node.space.N * node.space.n):
+                    cell = node.space.cells[(node.space.N * node.space.n * y) + x]
+                    if cell == 1 - turn_id:
+                        grade -= mark[y][x]
 
     return grade
