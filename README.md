@@ -1,5 +1,4 @@
-# CSC384
-## Ultimate Tic Tac Toe
+# CSC384: Ultimate Tic Tac Toe
 
 __Developed By__
 
@@ -7,6 +6,12 @@ __Developed By__
 - Zidong Xie
 
 All source code, excluding Python standard libraries, was written exclusively by us (Noah & Zidong). We did not use any starter code.
+
+## What is "Ultimate" Tic Tac Toe?
+
+> Ultimate tic-tac-toe also known as super tic-tac-toe or meta tic-tac-toe is a board game composed of nine tic-tac-toe boards arranged in a 3-by-3 grid. Players take turns playing in the smaller tic-tac-toe boards until one of them wins in the larger tic-tac-toe board. Strategy in this game is much more conceptually difficult, and has proven more challenging for computers.
+>
+> &mdash; [Wikipedia: Ultimate tic-tac-toe](https://en.wikipedia.org/w/index.php?title=Ultimate_tic-tac-toe&oldid=811938762)
 
 ## System Requirements
 
